@@ -44,7 +44,7 @@ class Client
      * Log timing information
      *
      * @param string  $stat       The metric to in log timing info for.
-     * @param float   $time       The ellapsed time (ms) to log
+     * @param int     $time       The ellapsed time (ms) to log
      * @param float|1 $sampleRate The rate (0-1) for sampling.
      *
      * @return void
@@ -58,7 +58,7 @@ class Client
      * Send a histogram metric
      *
      * @param string $stat       The stat identifier
-     * @param float  $metric     The metric for the histogram
+     * @param int    $metric     The metric for the histogram
      * @param float  $samplerate The rate (0-1) for sampling
      *
      * @return void
@@ -72,7 +72,7 @@ class Client
      * Adds a guage
      *
      * @param string $stat       The stat identifier
-     * @param float  $value      The metric for the guage
+     * @param int    $value      The metric for the guage
      * @param float  $samplerate The rate (0-1) for sampling
      *
      * @return void

@@ -4,7 +4,7 @@
  * @license   http://opensource.org/licenses/mit-license.php/ MIT
  */
 
-namespace Future\Metricsd;
+namespace Future\Statsd;
 
 /**
  * Test class for Client.
@@ -34,10 +34,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Future\Metricsd\Client::send
-     * @covers Future\Metricsd\Client::__construct
-     * @covers Future\Metricsd\Client::timing
-     * @covers Future\Metricsd\Client::histogram
+     * @covers Future\Statsd\Client::send
+     * @covers Future\Statsd\Client::__construct
+     * @covers Future\Statsd\Client::timing
      * @dataProvider timingProvider
      *
      * @param string $stat The stat name
@@ -51,31 +50,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $client     = new Client($connection, true, 'www.test.com.');
         $connection->expects($this->once())
             ->method('send')
-            ->with($this->equalTo("www.test.com.$stat:$time|h"));
+            ->with($this->equalTo("www.test.com.$stat:$time|ms"));
 
         $client->timing($stat, $time);
-    }
-
-    /**
-     * @covers Future\Metricsd\Client::send
-     * @covers Future\Metricsd\Client::__construct
-     * @covers Future\Metricsd\Client::histogram
-     * @dataProvider timingProvider
-     *
-     * @param string $stat The stat name
-     * @param float  $time The time to log
-     *
-     * @return void
-     */
-    public function testHistogram($stat, $time)
-    {
-        $connection = $this->getMock('\Future\Network\Connection', array('send'));
-        $client     = new Client($connection, true, 'www.test.com.');
-        $connection->expects($this->once())
-            ->method('send')
-            ->with($this->equalTo("www.test.com.$stat:$time|h"));
-
-        $client->histogram($stat, $time);
     }
 
     /**
@@ -98,9 +75,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Future\Metricsd\Client::send
-     * @covers Future\Metricsd\Client::__construct
-     * @covers Future\Metricsd\Client::guage
+     * @covers Future\Statsd\Client::send
+     * @covers Future\Statsd\Client::__construct
+     * @covers Future\Statsd\Client::guage
      * @dataProvider guageProvider
      *
      * @param string $stat  The stat name
@@ -120,39 +97,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Data provider for testMeter
-     *
-     * @return array
-     */
-    public function meterProvider()
-    {
-        return array(
-            array('meter')
-        );
-    }
-
-    /**
-     * @covers Future\Metricsd\Client::send
-     * @covers Future\Metricsd\Client::__construct
-     * @covers Future\Metricsd\Client::meter
-     * @dataProvider meterProvider
-     *
-     * @param string $meter The stat name
-     *
-     * @return void
-     */
-    public function testMeter($meter)
-    {
-        $connection = $this->getMock('\Future\Network\Connection', array('send'));
-        $client     = new Client($connection, true, 'www.test.com.');
-        $connection->expects($this->once())
-            ->method('send')
-            ->with($this->equalTo("www.test.com.$meter"));
-
-        $client->meter($meter);
-    }
-
-    /**
      * Data provider for testIncrement
      *
      * @return array
@@ -165,9 +109,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Future\Metricsd\Client::send
-     * @covers Future\Metricsd\Client::__construct
-     * @covers Future\Metricsd\Client::increment
+     * @covers Future\Statsd\Client::send
+     * @covers Future\Statsd\Client::__construct
+     * @covers Future\Statsd\Client::increment
      * @dataProvider incrementProvider
      *
      * @param string $stat Stat name
@@ -198,9 +142,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Future\Metricsd\Client::send
-     * @covers Future\Metricsd\Client::__construct
-     * @covers Future\Metricsd\Client::decrement
+     * @covers Future\Statsd\Client::send
+     * @covers Future\Statsd\Client::__construct
+     * @covers Future\Statsd\Client::decrement
      * @dataProvider decrementProvider
      *
      * @param string $stat Stat name
@@ -238,9 +182,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Future\Metricsd\Client::send
-     * @covers Future\Metricsd\Client::__construct
-     * @covers Future\Metricsd\Client::updateStats
+     * @covers Future\Statsd\Client::send
+     * @covers Future\Statsd\Client::__construct
+     * @covers Future\Statsd\Client::updateStats
      * @dataProvider updateStatsProvider
      *
      * @param string $stat  Stat name
@@ -260,50 +204,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Data provider for testDelete
-     *
-     * @return array
-     */
-    public function deleteProvider()
-    {
-        return array(
-            array(
-                'test',
-                Client::TYPE_COUNT
-            ),
-            array(
-                'hasd;lkj3',
-                Client::TYPE_GUAGE
-            )
-        );
-    }
-
-    /**
-     * @covers Future\Metricsd\Client::send
-     * @covers Future\Metricsd\Client::__construct
-     * @covers Future\Metricsd\Client::delete
-     * @dataProvider deleteProvider
-     *
-     * @param string $stat Stat name
-     * @param string $type Stat type
-     *
-     * @return void
-     */
-    public function testDelete($stat, $type)
-    {
-        $connection = $this->getMock('\Future\Network\Connection', array('send'));
-        $client     = new Client($connection, true, 'www.test.com.');
-        $connection->expects($this->once())
-            ->method('send')
-            ->with($this->equalTo("www.test.com.$stat:delete|$type"));
-
-        $client->delete($stat, $type);
-    }
-
-    /**
-     * @covers Future\Metricsd\Client::send
-     * @covers Future\Metricsd\Client::__construct
-     * @covers Future\Metricsd\Client::meter
+     * @covers Future\Statsd\Client::send
+     * @covers Future\Statsd\Client::__construct
+     * @covers Future\Statsd\Client::increment
      */
     public function testDisabled()
     {
@@ -312,6 +215,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $connection->expects($this->never())
             ->method('send');
 
-        $client->meter('neverCall');
+        $client->increment('neverCall');
     }
 }

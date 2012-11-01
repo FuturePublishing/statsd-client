@@ -4,23 +4,22 @@
  * @license   http://opensource.org/licenses/mit-license.php/ MIT
  */
 
-namespace Future\Metricsd;
+namespace Future\Statsd;
 
 /**
  * Sends statistics to the stats daemon over UDP
  *
  * Based on the etsy version at https://github.com/etsy/statsd/blob/master/examples/php-example.php
- *
  */
 class Client
 {
-    const TYPE_TIMING = 'h';
-
-    const TYPE_HISTOGRAM = 'h';
+    const TYPE_TIMING = 'ms';
 
     const TYPE_COUNT = 'c';
 
     const TYPE_GUAGE = 'g';
+
+    const TYPE_SET = 's';
 
     protected $connection;
 
@@ -55,21 +54,7 @@ class Client
      */
     public function timing($stat, $time, $sampleRate = 1)
     {
-        $this->histogram($stat, $time, $sampleRate);
-    }
-
-    /**
-     * Send a histogram metric
-     *
-     * @param string $stat       The stat identifier
-     * @param int    $metric     The metric for the histogram
-     * @param float  $samplerate The rate (0-1) for sampling
-     *
-     * @return void
-     */
-    public function histogram($stat, $metric, $samplerate = 1)
-    {
-        $this->send(array($stat . ':' . $metric . '|' . self::TYPE_HISTOGRAM), $samplerate);
+        $this->send(array($stat . ':' . $time . '|' . self::TYPE_TIMING), $sampleRate);
     }
 
     /**
@@ -84,19 +69,6 @@ class Client
     public function guage($stat, $value, $samplerate = 1)
     {
         $this->send(array($stat . ':' . $value . '|' . self::TYPE_GUAGE), $samplerate);
-    }
-
-    /**
-     * Adds a meter
-     *
-     * @param string $stat       The identifier for the meter
-     * @param float  $samplerate The rate (0-1) for sampling
-     *
-     * @return void
-     */
-    public function meter($stat, $samplerate = 1)
-    {
-        $this->send(array($stat), $samplerate);
     }
 
     /**
@@ -148,19 +120,6 @@ class Client
         }
 
         $this->send($data, $sampleRate);
-    }
-
-    /**
-     * Deletes a metric
-     *
-     * @param string $stat The name of the stat
-     * @param string $type The type of the stat (for convenience, use class consts Client::TYPE_*)
-     *
-     * @return void
-     */
-    public function delete($stat, $type)
-    {
-        $this->send(array($stat . ':' . 'delete|' . $type));
     }
 
     /**

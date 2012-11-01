@@ -71,6 +71,30 @@ class Client
         $this->send(array($stat . ':' . $value . '|' . self::TYPE_GUAGE), $samplerate);
     }
 
+
+    /**
+     * A "Set" is a count of unique events.
+     * This data type acts like a counter, but supports counting
+     * of unique occurences of values between flushes. The backend
+     * receives the number of unique events that happened since
+     * the last flush.
+     *
+     * The reference use case involved tracking the number of active
+     * and logged in users by sending the current userId of a user
+     * with each request with a key of "uniques" (or similar).
+     *
+     * @param string $stat  The set's name
+     * @param float  $value The unique value to put in the set
+     *
+     * @access public
+     *
+     * @return void
+     */
+    public function set($stat, $value)
+    {
+        $this->send(array($stat . ':' . $value . '|' . self::TYPE_SET), 1);
+    }
+
     /**
      * Increments one or more stats counters
      *

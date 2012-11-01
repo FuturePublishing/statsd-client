@@ -203,6 +203,37 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $client->updateStats($stat, $delta);
     }
 
+    public function setProvider()
+    {
+        return array(
+            array('set1', 1),
+            array('set2', 2),
+        );
+    }
+
+    /**
+     * Tests the set method
+     *
+     * @dataProvider setProvider
+     * 
+     * @param string $stat 
+     * @param string $value 
+     * 
+     * @access public
+     * 
+     * @return void
+     */
+    public function testSet($stat, $value)
+    {
+        $connection = $this->getMock('\Future\Network\Connection', array('send'));
+        $client     = new Client($connection, true, 'www.test.com.');
+        $connection->expects($this->once())
+            ->method('send')
+            ->with($this->equalTo("www.test.com.$stat:$value|s"));
+
+        $client->set($stat, $value);
+    }
+
     /**
      * @covers Future\Statsd\Client::send
      * @covers Future\Statsd\Client::__construct

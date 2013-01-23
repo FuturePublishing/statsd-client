@@ -1,0 +1,28 @@
+{
+    "name":         "FuturePublishing/statsd-client",
+    "type":         "library",
+    "license":      "MIT",
+    "description":  "A PHP library for Statsd",
+    "authors":      [
+        {
+            "name":     "Joseph Ray",
+            "email":    "joseph.ray@futurenet.com",
+            "role":     "Developer"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/FuturePublishing/php-network"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "FuturePublishing/php-network": "*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Future\\Statsd": "src/"
+        }
+    }
+}
